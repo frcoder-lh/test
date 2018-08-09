@@ -1,0 +1,46 @@
+<html>
+<head>
+    <title>.</title>
+    <meta charset="UTF-8">
+    <script language="javascript">
+
+        var password = "123";
+        var content = "<h1>Content</h1>";
+        var enterPressFlag = null;
+
+        window.onload = function () {
+            if (location.protocol.startsWith("http")) {
+                document.body.innerHTML = "<input type='password' id='pass' placeholder='请在此次输入密码' onkeypress='enterPress(event)' onkeydown='enterPress()'/> <input type='button' id='btn' value='确定'/>";
+            } else {
+                document.body.innerHTML = content;
+            }
+            var btn = document.getElementById("btn");
+            btn.onclick = function () {
+                checkPwd();
+            };
+        }
+
+        function enterPress(e) {
+            var e = e || window.event;
+            if (e.keyCode == 13 && enterPressFlag != 13) {
+                checkPwd();
+            }
+            enterPressFlag = e.keyCode;
+        }
+
+        function checkPwd() {
+            var pass = document.getElementById("pass");
+            if (pass.value == password) {
+                document.body.innerHTML = content;
+            } else {
+                alert("密码错误，请重试");
+                pass.value = "";
+                pass.focus();
+            }
+        }
+    </script>
+</head>
+<body>
+</body>
+
+</html>
