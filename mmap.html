@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+        <meta charset="utf-8">
+        <title>地图</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <script src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=9kKan8hqL7ufdILQDNIsMKPcqzTGaYzb"></script>
+
         <style type="text/css">
             body, html, #allmap {
                 width: 100%;
@@ -12,8 +17,7 @@
                 font-family: "微软雅黑";
             }
         </style>
-        <script type="text/javascript" src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=9kKan8hqL7ufdILQDNIsMKPcqzTGaYzb"></script>
-        <title>地图</title>
+
     </head>
     <body>
         <div id="allmap"></div>
@@ -42,7 +46,8 @@
         map.centerAndZoom(new BMapGL.Point(116.404, 39.915), 12);  // 初始化地图,设置中心点坐标和地图级别
         map.enableScrollWheelZoom(true);     //标注鼠标滚轮缩放
         map.addControl(new BMapGL.ScaleControl()); // 添加比例尺控件
-        map.addControl(new BMapGL.ZoomControl()); // 添加比例尺控件
+
+        // 自定义文本标注样式
         map.setMapStyleV2({
             styleJson: [
                 // 关闭所有
@@ -199,6 +204,18 @@
                     "stylers": {
                         "visibility": "on"
                     }
+                }, {
+                    "featureType": "district",
+                    "elementType": "labels.text",
+                    "stylers": {
+                        "fontsize": 50
+                    }
+                }, {
+                    "featureType": "district",
+                    "elementType": "labels.text.fill",
+                    "stylers": {
+                        "color": "#f01414b3"
+                    }
                 },
 
                 // 标注车站和机场
@@ -215,6 +232,12 @@
                         "visibility": "on"
                     }
                 }, {
+                    "featureType": "transportationlabel",
+                    "elementType": "labels.text",
+                    "stylers": {
+                        "fontsize": 40
+                    }
+                }, {
                     "featureType": "airportlabel",
                     "elementType": "labels",
                     "stylers": {
@@ -226,10 +249,67 @@
                     "stylers": {
                         "visibility": "on"
                     }
+                }, {
+                    "featureType": "airportlabel",
+                    "elementType": "labels.text",
+                    "stylers": {
+                        "fontsize": 40
+                    }
                 }
+
             ]
         });
-        // 自定义文本标注样式
+
+        // 标记行政区域边界
+        function initBoundary() {
+
+            var bdary = new BMapGL.Boundary();
+            map.clearOverlays();        //清除地图覆盖物
+            drawBoundary("北京市东城区");
+            drawBoundary("北京市西城区");
+            drawBoundary("北京市朝阳区");
+            drawBoundary("北京市海淀区");
+            drawBoundary("北京市丰台区");
+            drawBoundary("北京市昌平区");
+            drawBoundary("北京市通州区");
+            drawBoundary("北京市大兴区");
+            drawBoundary("北京市房山区");
+            drawBoundary("北京市石景山区");
+            drawBoundary("北京市门头沟区");
+            drawBoundary("北京市顺义区");
+            drawBoundary("北京市密云区");
+            drawBoundary("北京市平谷区");
+            drawBoundary("北京市怀柔区");
+            drawBoundary("北京市延庆区");
+
+            function drawBoundary(place) {
+                bdary.get(place, function (rs) {       //获取行政区域
+                    var count = rs.boundaries.length; //行政区域的点有多少个
+                    if (count === 0) {
+                        alert('未能获取当前输入行政区域');
+                        return;
+                    }
+                    var pointArray = [];
+                    for (var i = 0; i < count; i++) {
+                        //建立多边形覆盖物
+                        var ply = new BMapGL.Polygon(rs.boundaries[i], {
+                            strokeStyle: "dashed",
+                            strokeWeight: 2,
+                            strokeColor: "#ff0000",
+                            strokeOpacity: 0.7,
+                            fillOpacity: 0,
+                            enableClicking: false
+                        });
+                        map.addOverlay(ply);  //添加覆盖物
+                        pointArray = pointArray.concat(ply.getPath());
+                    }
+                });
+            }
+
+        }
+
+        initBoundary();
+
 
         labelStyle = {
             color: 'black',
