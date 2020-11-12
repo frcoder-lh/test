@@ -6,64 +6,62 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
         <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-        <script src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=9kKan8hqL7ufdILQDNIsMKPcqzTGaYzb"></script>
 
         <style type="text/css">
-            body, html, #allmap {
+            body, html, #mmap {
                 width: 100%;
                 height: 100%;
                 overflow: hidden;
                 margin: 0;
                 font-family: "微软雅黑";
             }
+
+            #mmap-search {
+                width: 100%;
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                z-index: 100;
+            }
+
+            .tangram-suggestion-main {
+                z-index: 100;
+            }
+
         </style>
+
+        <script src="http://api.map.baidu.com/api?type=webgl&v=1.0&ak=9kKan8hqL7ufdILQDNIsMKPcqzTGaYzb"></script>
 
     </head>
     <body>
-        <div id="allmap"></div>
+        <div id="mmap"></div>
+        <div id="mmap-search">
+            <input type="text" id="mmap-search-input" size="20" placeholder="请输入地址" style="width:150px;"/>
+            <div id="mmap-search-result" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
+        </div>
     </body>
 </html>
 <script type="text/javascript">
 
-    // 初始化
-    init();
+    var mmap = initMMap();
 
     // 获取点标记 http://api.map.baidu.com/geodata/v3/poi/list?ak=5s6Pv45l6Sk64PyH8TioxRfHKg0Dkq9N&geotable_id=215301&page_size=200
     Promise.resolve(
         {"status":0,"size":13,"total":13,"pois":[{"title":"\u6545\u5bab","location":[116.403397,39.924468],"city":"\u5317\u4eac\u5e02","create_time":"2020-11-11 17:31:16","geotable_id":215301,"address":"\u5317\u4eac\u5e02\u4e1c\u57ce\u533a","tags":"\u666f\u70b9","province":"\u5317\u4eac\u5e02","district":"\u4e1c\u57ce\u533a","gcj_location":[116.39703075092,39.91812874866],"city_id":131,"id":2711408237},{"title":"\u516b\u8fbe\u5cad\u957f\u57ce","location":[116.023667,40.365477],"city":"\u5317\u4eac\u5e02","create_time":"2020-11-11 17:15:49","geotable_id":215301,"address":"\u5317\u4eac\u5e02\u5ef6\u5e86\u53bf","tags":"\u666f\u70b9","province":"\u5317\u4eac\u5e02","district":"\u5ef6\u5e86\u53bf","gcj_location":[116.01719476587,40.359343654413],"city_id":131,"id":2711404925},{"address":"\u5317\u4eac\u5e02\u6d77\u6dc0\u533a","city":"\u5317\u4eac\u5e02","create_time":"2020-11-11 17:15:07","district":"\u6d77\u6dc0\u533a","geotable_id":215301,"location":[116.278687,40.005148],"modify_time":"2020-11-11 17:16:02","province":"\u5317\u4eac\u5e02","tags":"\u666f\u70b9","title":"\u9890\u548c\u56ed","gcj_location":[116.27228031142,39.998822192413],"city_id":131,"id":2711404827},{"address":"\u5317\u4eac\u5e02\u6d77\u6dc0\u533a","city":"\u5317\u4eac\u5e02","create_time":"2020-11-11 17:14:55","district":"\u6d77\u6dc0\u533a","geotable_id":215301,"location":[116.309789,40.012988],"modify_time":"2020-11-11 17:16:06","province":"\u5317\u4eac\u5e02","tags":"\u666f\u70b9","title":"\u5706\u660e\u56ed","gcj_location":[116.30331840008,40.006863807672],"city_id":131,"id":2711404761},{"address":"\u5317\u4eac\u5e02\u6d77\u6dc0\u533a\u672a\u540d\u5317\u8def","city":"\u5317\u4eac\u5e02","create_time":"2020-11-11 17:14:39","district":"\u6d77\u6dc0\u533a","geotable_id":215301,"location":[116.316799,40.000561],"modify_time":"2020-11-11 17:16:15","province":"\u5317\u4eac\u5e02","tags":"\u5927\u5b66","title":"\u5317\u4eac\u5927\u5b66","gcj_location":[116.31027874536,39.994560143535],"city_id":131,"id":2711404675},{"address":"\u5317\u4eac\u5e02\u6d77\u6dc0\u533a\u5b66\u5802\u8def","city":"\u5317\u4eac\u5e02","create_time":"2020-11-11 17:14:27","district":"\u6d77\u6dc0\u533a","geotable_id":215301,"location":[116.333414,40.009952],"modify_time":"2020-11-11 17:16:20","province":"\u5317\u4eac\u5e02","tags":"\u5927\u5b66","title":"\u6e05\u534e\u5927\u5b66","gcj_location":[116.32680698723,40.004217372764],"city_id":131,"id":2711404644},{"address":"\u5317\u4eac\u5e02\u6d77\u6dc0\u533a\u6821\u56ed\u4e1c\u8def18\u53f7","city":"\u5317\u4eac\u5e02","create_time":"2020-11-11 17:13:46","district":"\u6d77\u6dc0\u533a","geotable_id":215301,"location":[116.353722,39.988373],"modify_time":"2020-11-11 17:16:24","province":"\u5317\u4eac\u5e02","tags":"\u5927\u5b66","title":"\u5317\u4eac\u822a\u7a7a\u822a\u5929\u5927\u5b66","gcj_location":[116.34709310044,39.98269139392],"city_id":131,"id":2711404435},{"title":"\u56de\u9f99\u89c2(\u5730\u94c1\u7ad9)","location":[116.342694,40.076523],"city":"\u5317\u4eac\u5e02","create_time":"2020-11-11 14:49:29","geotable_id":215301,"address":"\u5317\u4eac\u5e02\u660c\u5e73\u533a\u81ea\u884c\u8f66\u4e13\u7528\u8def","tags":"\u5730\u94c1\u7ad9","province":"\u5317\u4eac\u5e02","district":"\u660c\u5e73\u533a","gcj_location":[116.33608516995,40.070868202147],"city_id":131,"id":2711377645},{"address":"\u5317\u4eac\u5e02\u6d77\u6dc0\u533aG7(\u897f\u4e8c\u65d7\u6865)","city":"\u5317\u4eac\u5e02","create_time":"2020-11-11 14:48:52","district":"\u6d77\u6dc0\u533a","geotable_id":215301,"location":[116.312543,40.059141],"modify_time":"2020-11-11 14:49:40","province":"\u5317\u4eac\u5e02","tags":"\u5730\u94c1\u7ad9","title":"\u897f\u4e8c\u65d7(\u5730\u94c1\u7ad9)","gcj_location":[116.30608637279,40.053075648683],"city_id":131,"id":2711377529},{"title":"\u5317\u4eac\u5b87\u6db5\u6587\u5316\u521b\u610f\u56ed","location":[116.569775,39.835633],"city":"\u5317\u4eac\u5e02","create_time":"2020-11-11 14:48:28","geotable_id":215301,"address":"\u5317\u4eac\u5e02\u901a\u5dde\u533a","tags":"\u5e38\u7528","province":"\u5317\u4eac\u5e02","district":"\u901a\u5dde\u533a","gcj_location":[116.56320824975,39.829860297404],"city_id":131,"id":2711377481},{"title":"\u4e2d\u5efa\u4e00\u5c40\u96c6\u56e2\u57f9\u8bad\u4e2d\u5fc3","location":[116.349968,39.746284],"city":"\u5317\u4eac\u5e02","create_time":"2020-11-11 14:47:53","geotable_id":215301,"address":"\u5317\u4eac\u5e02\u5927\u5174\u533a\u9f99\u6cb3\u8def14\u53f7","tags":"\u5e38\u7528","province":"\u5317\u4eac\u5e02","district":"\u5927\u5174\u533a","gcj_location":[116.34333420919,39.740621645606],"city_id":131,"id":2711377344},{"title":"\u56db\u8fbe\u65f6\u4ee3\u8f6f\u4ef6\u6280\u672f\u80a1\u4efd\u6709\u9650\u516c\u53f8","location":[116.577435,39.788215],"city":"\u5317\u4eac\u5e02","create_time":"2020-11-11 14:47:25","geotable_id":215301,"address":"\u5317\u4eac\u5e02\u901a\u5dde\u533a\u7ecf\u6d77\u4e94\u8def","tags":"\u5e38\u7528","province":"\u5317\u4eac\u5e02","district":"\u901a\u5dde\u533a","gcj_location":[116.57083103628,39.782526801565],"city_id":131,"id":2711377262},{"title":"\u5929\u5b89\u95e8","location":[116.403987,39.915324],"city":"\u5317\u4eac\u5e02","create_time":"2020-11-11 14:46:20","geotable_id":215301,"address":"\u5317\u4eac\u5e02\u4e1c\u57ce\u533a\u4e2d\u534e\u8def\u753210\u53f7","tags":"\u666f\u70b9","province":"\u5317\u4eac\u5e02","district":"\u4e1c\u57ce\u533a","gcj_location":[116.3976145662,39.908980868371],"city_id":131,"id":2711377045}],"message":"\u6210\u529f"}
     ).then(function (data) {
         for (const poi of data.pois) {
-            marker(poi.location[0], poi.location[1], poi.title);
+            mmap.markPoint(poi.location[0], poi.location[1], poi.title);
         }
     });
 
 
-    function init() {
+    // 初始化我的地图
+    function initMMap() {
 
-        // GL版命名空间为BMapGL
-        // 按住鼠标右键，修改倾斜角和角度
-        map = new BMapGL.Map("allmap");    // 创建Map实例
-        map.centerAndZoom(new BMapGL.Point(116.404, 39.915), 12);  // 初始化地图,设置中心点坐标和地图级别
-        map.enableScrollWheelZoom(true);     //标注鼠标滚轮缩放
-        map.addControl(new BMapGL.ScaleControl()); // 添加比例尺控件
-
-        // 自定义文本标注样式
-        map.setMapStyleV2({
+        var mayStyle = {
             styleJson: [
                 // 关闭所有
                 {
-                    "featureType": "poilabel",
-                    "elementType": "labels",
-                    "stylers": {
-                        "visibility": "off"
-                    }
-                }, {
-                    "featureType": "poilabel",
-                    "elementType": "labels.icon",
-                    "stylers": {
-                        "visibility": "off"
-                    }
-                }, {
                     "featureType": "districtlabel",
                     "elementType": "labels",
                     "stylers": {
@@ -197,8 +195,26 @@
                     }
                 },
 
-                // 标注区县
+                // 标注市区县
                 {
+                    "featureType": "city",
+                    "elementType": "labels",
+                    "stylers": {
+                        "visibility": "on"
+                    }
+                }, {
+                    "featureType": "city",
+                    "elementType": "labels.text",
+                    "stylers": {
+                        "fontsize": 80
+                    }
+                }, {
+                    "featureType": "city",
+                    "elementType": "labels.text.fill",
+                    "stylers": {
+                        "color": "#000000ff"
+                    }
+                }, {
                     "featureType": "district",
                     "elementType": "labels",
                     "stylers": {
@@ -208,7 +224,7 @@
                     "featureType": "district",
                     "elementType": "labels.text",
                     "stylers": {
-                        "fontsize": 50
+                        "fontsize": 60
                     }
                 }, {
                     "featureType": "district",
@@ -235,7 +251,7 @@
                     "featureType": "transportationlabel",
                     "elementType": "labels.text",
                     "stylers": {
-                        "fontsize": 40
+                        "fontsize": 50
                     }
                 }, {
                     "featureType": "airportlabel",
@@ -253,65 +269,107 @@
                     "featureType": "airportlabel",
                     "elementType": "labels.text",
                     "stylers": {
+                        "fontsize": 50
+                    }
+                },
+
+
+                // 兴趣点
+
+                {
+                    "featureType": "poilabel",
+                    "elementType": "labels.icon",
+                    "stylers": {
+                        "visibility": "on"
+                    }
+                }, {
+                    "featureType": "poilabel",
+                    "elementType": "labels",
+                    "stylers": {
+                        "visibility": "on"
+                    }
+                }, {
+                    "featureType": "poilabel",
+                    "elementType": "labels.text",
+                    "stylers": {
                         "fontsize": 40
+                    }
+                }, {
+                    "featureType": "poilabel",
+                    "elementType": "labels",
+                    "stylers": {
+                        "visibility": "off",
+                        "level": "9"
+                    }
+                }, {
+                    "featureType": "poilabel",
+                    "elementType": "labels",
+                    "stylers": {
+                        "visibility": "off",
+                        "level": "10"
+                    }
+                }, {
+                    "featureType": "poilabel",
+                    "elementType": "labels",
+                    "stylers": {
+                        "visibility": "off",
+                        "level": "11"
+                    }
+                }, {
+                    "featureType": "poilabel",
+                    "elementType": "labels",
+                    "stylers": {
+                        "visibility": "off",
+                        "level": "12"
+                    }
+                }, {
+                    "featureType": "poilabel",
+                    "elementType": "labels",
+                    "stylers": {
+                        "visibility": "off",
+                        "level": "13"
+                    }
+                }, {
+                    "featureType": "poilabel",
+                    "elementType": "labels.icon",
+                    "stylers": {
+                        "visibility": "off",
+                        "level": "9"
+                    }
+                }, {
+                    "featureType": "poilabel",
+                    "elementType": "labels.icon",
+                    "stylers": {
+                        "visibility": "off",
+                        "level": "10"
+                    }
+                }, {
+                    "featureType": "poilabel",
+                    "elementType": "labels.icon",
+                    "stylers": {
+                        "visibility": "off",
+                        "level": "11"
+                    }
+                }, {
+                    "featureType": "poilabel",
+                    "elementType": "labels.icon",
+                    "stylers": {
+                        "visibility": "off",
+                        "level": "12"
+                    }
+                }, {
+                    "featureType": "poilabel",
+                    "elementType": "labels.icon",
+                    "stylers": {
+                        "visibility": "off",
+                        "level": "13"
                     }
                 }
 
             ]
-        });
+        };
 
-        // 标记行政区域边界
-        function initBoundary() {
-
-            var bdary = new BMapGL.Boundary();
-            map.clearOverlays();        //清除地图覆盖物
-            drawBoundary("北京市东城区");
-            drawBoundary("北京市西城区");
-            drawBoundary("北京市朝阳区");
-            drawBoundary("北京市海淀区");
-            drawBoundary("北京市丰台区");
-            drawBoundary("北京市昌平区");
-            drawBoundary("北京市通州区");
-            drawBoundary("北京市大兴区");
-            drawBoundary("北京市房山区");
-            drawBoundary("北京市石景山区");
-            drawBoundary("北京市门头沟区");
-            drawBoundary("北京市顺义区");
-            drawBoundary("北京市密云区");
-            drawBoundary("北京市平谷区");
-            drawBoundary("北京市怀柔区");
-            drawBoundary("北京市延庆区");
-
-            function drawBoundary(place) {
-                bdary.get(place, function (rs) {       //获取行政区域
-                    var count = rs.boundaries.length; //行政区域的点有多少个
-                    if (count === 0) {
-                        alert('未能获取当前输入行政区域');
-                        return;
-                    }
-                    var pointArray = [];
-                    for (var i = 0; i < count; i++) {
-                        //建立多边形覆盖物
-                        var ply = new BMapGL.Polygon(rs.boundaries[i], {
-                            strokeStyle: "dashed",
-                            strokeWeight: 2,
-                            strokeColor: "#ff0000",
-                            strokeOpacity: 0.7,
-                            fillOpacity: 0,
-                            enableClicking: false
-                        });
-                        map.addOverlay(ply);  //添加覆盖物
-                        pointArray = pointArray.concat(ply.getPath());
-                    }
-                });
-            }
-
-        }
-
-        initBoundary();
-
-
-        labelStyle = {
+        var labelStyle = {
             color: 'black',
             borderRadius: '5px',
             borderColor: '#ccc',
@@ -322,15 +380,145 @@
             fontFamily: '微软雅黑'
         };
 
-        window.marker = function (x, y, lable) {
+        var boundaryStyle = {
+            strokeStyle: "dashed",
+            strokeWeight: 2,
+            strokeColor: "#ff0000",
+            strokeOpacity: 0.7,
+            fillOpacity: 0,
+            enableClicking: false
+        };
+
+        var map = createMap("mmap", 116.404, 39.915, 12, mayStyle, labelStyle, boundaryStyle);
+
+        // 标记行政区域边界
+        map.drawBoundary("北京市东城区");
+        map.drawBoundary("北京市西城区");
+        map.drawBoundary("北京市朝阳区");
+        map.drawBoundary("北京市海淀区");
+        map.drawBoundary("北京市丰台区");
+        map.drawBoundary("北京市昌平区");
+        map.drawBoundary("北京市通州区");
+        map.drawBoundary("北京市大兴区");
+        map.drawBoundary("北京市房山区");
+        map.drawBoundary("北京市石景山区");
+        map.drawBoundary("北京市门头沟区");
+        map.drawBoundary("北京市顺义区");
+        map.drawBoundary("北京市密云区");
+        map.drawBoundary("北京市平谷区");
+        map.drawBoundary("北京市怀柔区");
+        map.drawBoundary("北京市延庆区");
+
+        // 初始化搜索框
+        map.initSearchInput();
+
+        return map;
+    }
+
+    // 创建地图
+    function createMap(mapDivId, x, y, zoom, mayStyle, labelStyle, boundaryStyle) {
+
+        // GL版命名空间为BMapGL
+        // 按住鼠标右键，修改倾斜角和角度
+        var map = new BMapGL.Map(mapDivId);    // 创建Map实例
+        map.centerAndZoom(new BMapGL.Point(x, y), zoom);  // 初始化地图,设置中心点坐标和地图级别
+        map.enableScrollWheelZoom(true);     //标注鼠标滚轮缩放
+        map.addControl(new BMapGL.ScaleControl()); // 添加比例尺控件
+
+        // 自定义文本标注样式
+        if (mayStyle) {
+            map.setMapStyleV2(mayStyle);
+        }
+
+        // 标注函数
+        map.markPoint = function (x, y, lable) {
             var m = new BMapGL.Marker(new BMapGL.Point(x, y));
             if (lable) {
                 var l = new BMapGL.Label(lable);
-                l.setStyle(labelStyle);
+                if (labelStyle) {
+                    l.setStyle(labelStyle);
+                }
                 m.setLabel(l);
             }
             map.addOverlay(m);
-        }
+        };
+
+        // 边界函数
+        var bdary = new BMapGL.Boundary();
+        map.drawBoundary = function (place) {
+            bdary.get(place, function (rs) {       //获取行政区域
+                var count = rs.boundaries.length; //行政区域的点有多少个
+                if (count === 0) {
+                    alert('未能获取当前输入行政区域');
+                    return;
+                }
+                var pointArray = [];
+                for (var i = 0; i < count; i++) {
+                    //建立多边形覆盖物
+                    var ply = new BMapGL.Polygon(rs.boundaries[i], boundaryStyle);
+                    map.addOverlay(ply);  //添加覆盖物
+                    pointArray = pointArray.concat(ply.getPath());
+                }
+            });
+        };
+
+        // 搜索框初始化函数
+        map.initSearchInput = function (suggestInputId, searchResultPanelId) {
+
+            if (!suggestInputId) suggestInputId = mapDivId + "-search-input";
+            if (!searchResultPanelId) searchResultPanelId = mapDivId + "-search-result";
+
+            function G(id) {
+                return document.getElementById(id);
+            }
+
+            //建立一个自动完成的对象
+            var ac = new BMapGL.Autocomplete({
+                "input": suggestInputId, "location": map
+            });
+
+            ac.addEventListener("onhighlight", function (e) {  //鼠标放在下拉列表上的事件
+                var str = "";
+                var _value = e.fromitem.value;
+                var value = "";
+                if (e.fromitem.index > -1) {
+                    value = _value.province + _value.city + _value.district + _value.street + _value.business;
+                }
+                str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+
+                value = "";
+                if (e.toitem.index > -1) {
+                    _value = e.toitem.value;
+                    value = _value.province + _value.city + _value.district + _value.street + _value.business;
+                }
+                str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+                G(searchResultPanelId).innerHTML = str;
+            });
+
+            var myValue;
+            ac.addEventListener("onconfirm", function (e) {    //鼠标点击下拉列表后的事件
+                var _value = e.item.value;
+                myValue = _value.province + _value.city + _value.district + _value.street + _value.business;
+                G(searchResultPanelId).innerHTML = "onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+
+                setPlace();
+            });
+
+            function setPlace() {
+                function myFun() {
+                    var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
+                    map.centerAndZoom(pp, 18);
+                    map.addOverlay(new BMapGL.Marker(pp));    //添加标注
+                }
+
+                var local = new BMapGL.LocalSearch(map, { //智能搜索
+                    onSearchComplete: myFun
+                });
+                local.search(myValue);
+            }
+        };
+
+        return map;
     }
 
 
